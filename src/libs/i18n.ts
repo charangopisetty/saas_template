@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import { createSharedPathnamesNavigation } from 'next-intl/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
 import { AllLocales } from '@/utils/AppConfig';
@@ -27,5 +26,5 @@ export default getRequestConfig(async ({ locale }) => {
   };
 });
 
-export const { Link, redirect, usePathname, useRouter } =
-  createSharedPathnamesNavigation({ locales: AllLocales });
+// Move navigation utilities to a separate file to avoid headers access in the config
+export { Link, redirect, usePathname, useRouter } from './i18nNavigation';
