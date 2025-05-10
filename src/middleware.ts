@@ -62,7 +62,8 @@ export default async function middleware(
         return NextResponse.redirect(orgSelection);
       }
 
-      return intlMiddleware(req);
+      const intlResponse = await intlMiddleware(req);
+      return intlResponse;
     })(request, event);
   }
 
