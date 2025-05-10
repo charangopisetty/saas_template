@@ -23,6 +23,15 @@ export default withSentryConfig(
     experimental: {
       serverComponentsExternalPackages: ['@electric-sql/pglite'],
     },
+    async redirects() {
+      return [
+        {
+          source: '/',
+          destination: '/en',
+          permanent: true,
+        },
+      ];
+    },
   }),
   {
     org: 'nextjs-boilerplate-org',
