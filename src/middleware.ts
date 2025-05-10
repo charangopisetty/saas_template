@@ -4,24 +4,11 @@ import {
   type NextRequest,
   NextResponse,
 } from 'next/server';
-import createMiddleware from 'next-intl/middleware';
-
-import { AllLocales, AppConfig } from './utils/AppConfig';
-
-const intlMiddleware = createMiddleware({
-  locales: AllLocales,
-  localePrefix: AppConfig.localePrefix,
-  defaultLocale: AppConfig.defaultLocale,
-  localeDetection: false,
-});
 
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
-  '/:locale/dashboard(.*)',
   '/onboarding(.*)',
-  '/:locale/onboarding(.*)',
   '/api(.*)',
-  '/:locale/api(.*)',
 ]);
 
 export default async function middleware(
@@ -36,10 +23,7 @@ export default async function middleware(
     ) {
       return clerkMiddleware(async (auth, req) => {
         if (isProtectedRoute(req)) {
-          const locale =
-            req.nextUrl.pathname.match(/(\/.*)\/dashboard/)?.at(1) ?? '';
-
-          const signInUrl = new URL(`${locale}/sign-in`, req.url);
+          const signInUrl = new URL('/sign-in', req.url);
 
           await auth.protect({
             unauthenticatedUrl: signInUrl.toString(),
@@ -62,12 +46,11 @@ export default async function middleware(
           return NextResponse.redirect(orgSelection);
         }
 
-        const intlResponse = await intlMiddleware(req);
-        return intlResponse;
+        return NextResponse.next();
       })(request, event);
     }
 
-    return intlMiddleware(request);
+    return NextResponse.next();
   } catch (error) {
     console.error('Middleware error:', error);
     return NextResponse.next();
